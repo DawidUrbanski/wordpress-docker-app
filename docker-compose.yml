@@ -1,0 +1,44 @@
+version: '2'
+services:
+    wordpress:
+        image: dawidurbanski/wordpress-legacy
+        links:
+            - db:mysql
+            - mailhog
+        ports:
+            - 80:80
+        domainname: {placeholder}.localhost
+        hostname: {placeholder}
+        volumes:
+            - ./config/.htaccess:/var/www/html/.htaccess
+            - ./config/wp-config.php:/var/www/html/wp-config.php
+            - ./config/wp.sh:/var/www/html/wp.sh
+            - ./config/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+            - ./plugins:/var/www/html/wp-content/plugins
+            - ./themes/{placeholder}:/var/www/html/wp-content/themes/{placeholder}
+        environment:
+            WORDPRESS_DB_PASSWORD: docker
+        depends_on:
+            - mailhog
+            - db
+
+    mailhog:
+        image: mailhog/mailhog
+        ports:
+            - 1025:1025
+            - 8025:8025
+
+    wpcli:
+        image: tatemz/wp-cli
+        volumes_from:
+            - wordpress
+        links:
+            - db:mysql
+        command: "sh wp.sh"
+
+    db:
+        image: mysql
+        ports:
+            - 3306:3306
+        environment:
+            MYSQL_ROOT_PASSWORD: docker
