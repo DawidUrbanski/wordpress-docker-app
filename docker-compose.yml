@@ -1,7 +1,7 @@
 version: '2'
 services:
     wordpress:
-        image: dawidurbanski/wordpress-legacy
+        image: dawidurbanski/wordpress
         links:
             - db:mysql
             - mailhog
@@ -10,8 +10,6 @@ services:
         domainname: {placeholder}.localhost
         hostname: {placeholder}
         volumes:
-            - ./config/.htaccess:/var/www/html/.htaccess
-            - ./config/wp-config.php:/var/www/html/wp-config.php
             - ./config/wp.sh:/var/www/html/wp.sh
             - ./config/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
             - ./plugins:/var/www/html/wp-content/plugins
@@ -21,20 +19,13 @@ services:
         depends_on:
             - mailhog
             - db
+        command: "sh wp.sh"
 
     mailhog:
         image: mailhog/mailhog
         ports:
             - 1025:1025
             - 8025:8025
-
-    wpcli:
-        image: tatemz/wp-cli
-        volumes_from:
-            - wordpress
-        links:
-            - db:mysql
-        command: "sh wp.sh"
 
     db:
         image: mysql
