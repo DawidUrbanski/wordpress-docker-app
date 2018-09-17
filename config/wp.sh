@@ -8,10 +8,12 @@ if ! $(wp core is-installed --allow-root); then
 
 	# clean up
 	wp rewrite structure '/%postname%/' --hard --allow-root
+	wp plugin uninstall hello --deactivate --allow-root
+	wp plugin uninstall akismet --deactivate --allow-root
 
 fi
 
-if ! $(wp plugin is-installed 'https://github.com/Kubitomakita/mailhog-wp-smtp/archive/master.zip'  --allow-root); then
+if [ ! -d /var/www/html/wp-content/plugins/mailhog-wp-smtp/ ]; then
 
 	# dependencies
 	wp plugin install 'https://github.com/Kubitomakita/mailhog-wp-smtp/archive/master.zip'  --activate --allow-root

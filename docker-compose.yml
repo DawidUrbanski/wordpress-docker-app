@@ -19,7 +19,6 @@ services:
         depends_on:
             - mailhog
             - db
-        command: "sh wp.sh"
 
     mailhog:
         image: mailhog/mailhog
